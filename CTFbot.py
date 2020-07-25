@@ -84,7 +84,8 @@ def check_flag_command(update, context):
             update.message.reply_text("Flag is incorrect. Try harder!".format(context.args[0]))
 
 def print_scoreboard(update, context):
-    top = sorted(context.bot_data["scoreboard"].items(), key = lambda x: (-x[1]['score'], x[1]['last_update']))[:10]
+    scoreboard = context.bot_data["scoreboard"]
+    top = sorted(scoreboard.items(), key = lambda x: (-x[1]['score'], x[1]['last_update']))[:10]
     
     if top:
         table  = "```\nTop 10:\n"
@@ -96,8 +97,8 @@ def print_scoreboard(update, context):
         user_id = update["message"]["from_user"]["id"]
         top_ids = [u[0] for u in top]
         
-        if not user_id in top_ids:
-            update.message.reply_text("```\nYour score is {} points.```".format(context.bot_data["scoreboard"][user_id]["score"]), parse_mode = ParseMode.MARKDOWN_V2)
+        if (not user_id in top_ids) and (user_id in scoreboard.keys()):
+            update.message.reply_text("```\nYour score is {} points.```".format(scoreboard[user_id]["score"]), parse_mode = ParseMode.MARKDOWN_V2)
     else:
         update.message.reply_text("No flags submited yet.")
 
